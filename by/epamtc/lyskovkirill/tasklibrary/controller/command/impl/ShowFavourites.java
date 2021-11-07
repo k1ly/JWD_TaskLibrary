@@ -27,13 +27,17 @@ public class ShowFavourites extends AbstractCommand {
 
                 try {
                     List<Book> bookList = libraryService.showFavourites(userContext);
-                    StringBuilder responseBuilder = new StringBuilder();
+                    if (bookList == null)
+                        response = "Invalid input parameters!";
+                    else {
+                        StringBuilder responseBuilder = new StringBuilder();
 
-                    responseBuilder.append("Favourites:\n");
-                    for (Book book : bookList) {
-                        responseBuilder.append(book).append('\n');
+                        responseBuilder.append("Favourites:\n");
+                        for (Book book : bookList) {
+                            responseBuilder.append(book).append('\n');
+                        }
+                        response = responseBuilder.toString();
                     }
-                    response = responseBuilder.toString();
                 } catch (ServiceException e) {
                     response = "Error during showing favourites";
                     Log.getLogger().error("Error stack trace:", e);

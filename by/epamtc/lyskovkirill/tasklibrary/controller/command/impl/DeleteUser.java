@@ -30,7 +30,10 @@ public class DeleteUser extends AbstractCommand {
 
                 try {
                     userContext = clientService.delete(userContext.getLogin(), password);
-                    response = "User deleted";
+                    if (userContext == null)
+                        response = "Invalid input parameters!";
+                    else
+                        response = "User deleted";
                 } catch (ServiceException e) {
                     response = "Error during user deleting";
                     Log.getLogger().error("Error stack trace:", e);

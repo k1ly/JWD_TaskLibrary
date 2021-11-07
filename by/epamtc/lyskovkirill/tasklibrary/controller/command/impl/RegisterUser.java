@@ -36,7 +36,10 @@ public class RegisterUser extends AbstractCommand {
                 try {
                     User newUser = new User(login, password, name);
                     userContext = clientService.register(newUser);
-                    response = "Successfully registered!";
+                    if (userContext == null)
+                        response = "Invalid input parameters!";
+                    else
+                        response = "Successfully registered!";
                 } catch (ServiceException e) {
                     response = "Error during registration procedure";
                     Log.getLogger().error("Error stack trace:", e);

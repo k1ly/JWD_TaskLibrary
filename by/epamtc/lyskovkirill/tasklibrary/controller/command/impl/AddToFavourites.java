@@ -35,8 +35,12 @@ public class AddToFavourites extends AbstractCommand {
 
                 try {
                     Book book = libraryService.findByTitleAndAuthor(title, author);
-                    userContext = clientService.addToFavourites(userContext, book.getId());
-                    response = "Book added to your favourites!";
+                    if (book == null)
+                        response = "Invalid input parameters!";
+                    else {
+                        userContext = clientService.addToFavourites(userContext, book.getId());
+                        response = "Book added to your favourites!";
+                    }
                 } catch (ServiceException e) {
                     response = "Error during adding book to favourites";
                     Log.getLogger().error("Error stack trace:", e);

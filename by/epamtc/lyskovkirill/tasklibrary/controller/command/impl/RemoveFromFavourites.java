@@ -35,8 +35,12 @@ public class RemoveFromFavourites extends AbstractCommand {
 
                 try {
                     Book book = libraryService.findByTitleAndAuthor(title, author);
-                    userContext = clientService.removeFromFavourites(userContext, book.getId());
-                    response = "Book removed from your favourites!";
+                    if (book == null)
+                        response = "Invalid input parameters!";
+                    else {
+                        userContext = clientService.removeFromFavourites(userContext, book.getId());
+                        response = "Book removed from your favourites!";
+                    }
                 } catch (ServiceException e) {
                     response = "Error during removing book from favourites";
                     Log.getLogger().error("Error stack trace:", e);

@@ -1,6 +1,7 @@
 package by.epamtc.lyskovkirill.tasklibrary.service.impl;
 
 import by.epamtc.lyskovkirill.tasklibrary.bean.User;
+import by.epamtc.lyskovkirill.tasklibrary.bean.UserAttribute;
 import by.epamtc.lyskovkirill.tasklibrary.dao.UserDAO;
 import by.epamtc.lyskovkirill.tasklibrary.dao.exception.DAOException;
 import by.epamtc.lyskovkirill.tasklibrary.dao.factory.DAOFactory;
@@ -50,31 +51,35 @@ public class ClientServiceImpl implements ClientService {
             } catch (ServiceException | DAOException e) {
                 throw new ServiceException("User registration error", e);
             }
-        }
+        } else
+            user = null;
         return user;
     }
 
     @Override
     public User update(User user, String password, String updatingAttribute, String newAttribute) throws ServiceException {
-        boolean isAttributeValid = switch (updatingAttribute) {
-            case "LOGIN" -> UserValidation.validateLogin(newAttribute);
-            case "PASSWORD" -> UserValidation.validatePassword(newAttribute);
-            case "NAME" -> UserValidation.validateName(newAttribute);
-            default -> throw new ServiceException("Wrong user attribute");
-        };
+        boolean isNewAttributeValid = false;
+        UserAttribute userAttribute;
 
-        if (isAttributeValid && UserValidation.validatePassword(password)) {
-            DAOFactory daoObjectFactory = DAOFactory.getInstance();
-            UserDAO userDAO = daoObjectFactory.getUserDAO();
+        DAOFactory daoObjectFactory = DAOFactory.getInstance();
+        UserDAO userDAO = daoObjectFactory.getUserDAO();
 
-            try {
-                password = SHA256PasswordHash.computeHash(password);
-                if (updatingAttribute.equals("PASSWORD"))
-                    newAttribute = SHA256PasswordHash.computeHash(newAttribute);
-                user = userDAO.updateUser(user, password, updatingAttribute, newAttribute);
-            } catch (ServiceException | DAOException e) {
-                throw new ServiceException("User updating error", e);
+        try {
+            userAttribute = UserAttribute.valueOf(updatingAttribute);
+            switch (userAttribute) {
+                case LOGIN -> isNewAttributeValid = UserValidation.validateLogin(newAttribute);
+                case PASSWORD -> isNewAttributeValid = UserValidation.validatePassword(newAttribute);
+                case NAME -> isNewAttributeValid = UserValidation.validateName(newAttribute);
             }
+            password = SHA256PasswordHash.computeHash(password);
+            if (userAttribute == UserAttribute.PASSWORD)
+                newAttribute = SHA256PasswordHash.computeHash(newAttribute);
+            if (isNewAttributeValid && UserValidation.validatePassword(password))
+                user = userDAO.updateUser(user, password, userAttribute, newAttribute);
+            else
+                user = null;
+        } catch (ServiceException | DAOException e) {
+            throw new ServiceException("User updating error", e);
         }
         return user;
     }

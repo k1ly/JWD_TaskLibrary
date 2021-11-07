@@ -35,8 +35,10 @@ public class EditBook extends AbstractCommand {
                 LibraryService libraryService = serviceFactory.getLibraryService();
 
                 try {
-                    libraryService.editBook(title, author, editingAttribute.toUpperCase(), newAttribute);
-                    response = "Book successfully edited!";
+                    if (libraryService.editBook(title, author, editingAttribute.toUpperCase(), newAttribute))
+                        response = "Book successfully edited!";
+                    else
+                        response = "Invalid input parameters!";
                 } catch (ServiceException e) {
                     response = "Error during book editing";
                     Log.getLogger().error("Error stack trace:", e);

@@ -34,15 +34,18 @@ public class FindBooksBy extends AbstractCommand {
                 LibraryService libraryService = serviceFactory.getLibraryService();
 
                 try {
-                    List<Book> bookList;
-                    StringBuilder responseBuilder = new StringBuilder();
-                    bookList = libraryService.findByAttribute(attribute.toUpperCase(), searchingFilter);
-                    responseBuilder.append("Books where ").append(attribute.toLowerCase())
-                            .append(" is ").append(searchingFilter).append(":\n");
-                    for (Book book : bookList) {
-                        responseBuilder.append(book.toString()).append(":\n");
+                    List<Book> bookList = libraryService.findByAttribute(attribute.toUpperCase(), searchingFilter);
+                    if (bookList == null)
+                        response = "Invalid input parameters!";
+                    else {
+                        StringBuilder responseBuilder = new StringBuilder();
+                        responseBuilder.append("Books where ").append(attribute.toLowerCase())
+                                .append(" is ").append(searchingFilter).append(":\n");
+                        for (Book book : bookList) {
+                            responseBuilder.append(book.toString()).append(":\n");
+                        }
+                        response = responseBuilder.toString();
                     }
-                    response = responseBuilder.toString();
                 } catch (ServiceException e) {
                     response = "Error during book searching";
                     Log.getLogger().error("Error stack trace:", e);

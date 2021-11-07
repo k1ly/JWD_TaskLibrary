@@ -33,8 +33,11 @@ public class SignIn extends AbstractCommand {
 
                 try {
                     userContext = clientService.signIn(login, password);
-                    response = userContext.getRole() == UserRole.GUEST ? "Wrong login or password"
-                            : "Welcome, " + userContext.getName() + "!";
+                    if (userContext == null)
+                        response = "Invalid input parameters!";
+                    else
+                        response = userContext.getRole() == UserRole.GUEST ? "Wrong login or password"
+                                : "Welcome, " + userContext.getName() + "!";
                 } catch (ServiceException e) {
                     response = "Error during login procedure";
                     Log.getLogger().error("Error stack trace:", e);

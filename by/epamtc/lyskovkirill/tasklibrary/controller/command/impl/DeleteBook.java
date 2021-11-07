@@ -31,8 +31,11 @@ public class DeleteBook extends AbstractCommand {
                 LibraryService libraryService = serviceFactory.getLibraryService();
 
                 try {
-                    libraryService.deleteBook(title, author);
-                    response = "Book deleted";
+                    if (libraryService.deleteBook(title, author))
+                        response = "Book deleted";
+                    else
+                        response = "Invalid input parameters!";
+
                 } catch (ServiceException e) {
                     response = "Error during book deleting";
                     Log.getLogger().error("Error stack trace:", e);

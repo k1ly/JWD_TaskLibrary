@@ -34,7 +34,10 @@ public class UpdateUser extends AbstractCommand {
 
                 try {
                     userContext = clientService.update(userContext, password, updatingAttribute.toUpperCase(), newAttribute);
-                    response = "User successfully updated!";
+                    if (userContext == null)
+                        response = "Invalid input parameters!";
+                    else
+                        response = "User successfully updated!";
                 } catch (ServiceException e) {
                     response = "Error during user updating";
                     Log.getLogger().error("Error stack trace:", e);

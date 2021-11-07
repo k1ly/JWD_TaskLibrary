@@ -15,22 +15,16 @@ public class Library {
         String request;
         String response;
 
-        do {
-            request = scanRequest();
-            response = controller.executeTask(request);
-            if (response != null)
-                System.out.println(response);
-            else break;
-        } while (true);
-    }
-
-    private String scanRequest() {
-        String request = null;
         try {
-            request = scanner.nextLine();
+            do {
+                request = scanner.nextLine();
+                response = controller.executeTask(request);
+                if (response != null)
+                    System.out.println(response);
+                else break;
+            } while (true);
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
-        return request;
     }
 }

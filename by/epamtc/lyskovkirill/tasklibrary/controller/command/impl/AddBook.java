@@ -37,8 +37,10 @@ public class AddBook extends AbstractCommand {
 
                 try {
                     Book newBook = new Book(title, author, BookGenre.valueOf(genre.toUpperCase()));
-                    libraryService.addNewBook(newBook);
-                    response = "Book added to the library!";
+                    if (libraryService.addNewBook(newBook))
+                        response = "Book added to the library!";
+                    else
+                        response = "Invalid input parameters!";
                 } catch (ServiceException | IllegalArgumentException e) {
                     response = "Error during book adding";
                     Log.getLogger().error("Error stack trace:", e);

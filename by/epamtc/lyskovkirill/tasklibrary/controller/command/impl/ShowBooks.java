@@ -27,13 +27,17 @@ public class ShowBooks extends AbstractCommand {
 
                 try {
                     List<Book> bookList = libraryService.showAllBooks();
-                    StringBuilder responseBuilder = new StringBuilder();
+                    if (bookList == null)
+                        response = "Invalid input parameters!";
+                    else {
+                        StringBuilder responseBuilder = new StringBuilder();
 
-                    responseBuilder.append("Books:\n");
-                    for (Book book : bookList) {
-                        responseBuilder.append(book).append('\n');
+                        responseBuilder.append("Books:\n");
+                        for (Book book : bookList) {
+                            responseBuilder.append(book).append('\n');
+                        }
+                        response = responseBuilder.toString();
                     }
-                    response = responseBuilder.toString();
                 } catch (ServiceException e) {
                     response = "Error during showing all books";
                     Log.getLogger().error("Error stack trace:", e);
