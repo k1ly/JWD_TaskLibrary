@@ -1,5 +1,6 @@
 package by.epamtc.lyskovkirill.tasklibrary.controller.command.impl;
 
+import by.epamtc.lyskovkirill.tasklibrary.bean.User;
 import by.epamtc.lyskovkirill.tasklibrary.bean.UserRole;
 import by.epamtc.lyskovkirill.tasklibrary.controller.command.AbstractCommand;
 import by.epamtc.lyskovkirill.tasklibrary.controller.logger.Log;
@@ -33,11 +34,13 @@ public class UpdateUser extends AbstractCommand {
                 ClientService clientService = serviceFactory.getClientService();
 
                 try {
-                    userContext = clientService.update(userContext, password, updatingAttribute.toUpperCase(), newAttribute);
-                    if (userContext == null)
+                    User user = clientService.update(userContext, password, updatingAttribute.toUpperCase(), newAttribute);
+                    if (user == null)
                         response = "Invalid input parameters!";
-                    else
+                    else {
+                        userContext = user;
                         response = "User successfully updated!";
+                    }
                 } catch (ServiceException e) {
                     response = "Error during user updating";
                     Log.getLogger().error("Error stack trace:", e);

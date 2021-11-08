@@ -1,5 +1,6 @@
 package by.epamtc.lyskovkirill.tasklibrary.controller.command.impl;
 
+import by.epamtc.lyskovkirill.tasklibrary.bean.User;
 import by.epamtc.lyskovkirill.tasklibrary.bean.UserRole;
 import by.epamtc.lyskovkirill.tasklibrary.controller.command.AbstractCommand;
 import by.epamtc.lyskovkirill.tasklibrary.controller.logger.Log;
@@ -32,12 +33,14 @@ public class SignIn extends AbstractCommand {
                 ClientService clientService = serviceFactory.getClientService();
 
                 try {
-                    userContext = clientService.signIn(login, password);
-                    if (userContext == null)
+                    User user = clientService.signIn(login, password);
+                    if (user == null)
                         response = "Invalid input parameters!";
-                    else
+                    else {
+                        userContext = user;
                         response = userContext.getRole() == UserRole.GUEST ? "Wrong login or password"
                                 : "Welcome, " + userContext.getName() + "!";
+                    }
                 } catch (ServiceException e) {
                     response = "Error during login procedure";
                     Log.getLogger().error("Error stack trace:", e);
