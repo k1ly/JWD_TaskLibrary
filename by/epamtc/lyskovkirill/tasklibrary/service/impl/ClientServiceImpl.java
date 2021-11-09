@@ -34,7 +34,7 @@ public class ClientServiceImpl implements ClientService {
     public User signOut(User user) throws ServiceException {
         if (user.getLogin() == null)
             throw new ServiceException("Sign out error");
-        user = new User();
+        user = User.getGuestInstance();
         return user;
     }
 

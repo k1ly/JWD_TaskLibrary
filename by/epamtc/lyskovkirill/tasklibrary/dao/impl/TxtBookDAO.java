@@ -12,7 +12,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -98,9 +97,9 @@ public class TxtBookDAO implements BookDAO {
         try {
             bookList = scanBooksFromFile();
 
-            for (Book value : bookList) {
-                if (title.equals(value.getTitle()) && author.equals(value.getAuthor()))
-                    book = value;
+            for (Book b : bookList) {
+                if (title.equals(b.getTitle()) && author.equals(b.getAuthor()))
+                    book = b;
             }
         } catch (Exception e) {
             throw new DAOException("Searching book to favourites process error", e);
@@ -160,19 +159,20 @@ public class TxtBookDAO implements BookDAO {
         if (booksFile == null)
             throw new DAOException("Opening source file error");
 
-        Scanner scanner = new Scanner(booksFile);
-        List<Book> bookList = new ArrayList<>();
+        try (Scanner scanner = new Scanner(booksFile)) {
+            List<Book> bookList = new ArrayList<>();
 
-        while (scanner.hasNext()) {
-            String[] bookAttributes = scanner.nextLine().split(attributeSeparator);
-            Book temp = new Book();
-            temp.setId(Integer.parseInt(bookAttributes[0]));
-            temp.setTitle(bookAttributes[1]);
-            temp.setAuthor(bookAttributes[2]);
-            temp.setGenre(BookGenre.valueOf(bookAttributes[3]));
-            bookList.add(temp);
+            while (scanner.hasNext()) {
+                String[] bookAttributes = scanner.nextLine().split(attributeSeparator);
+                Book temp = new Book();
+                temp.setId(Integer.parseInt(bookAttributes[0]));
+                temp.setTitle(bookAttributes[1]);
+                temp.setAuthor(bookAttributes[2]);
+                temp.setGenre(BookGenre.valueOf(bookAttributes[3]));
+                bookList.add(temp);
+            }
+            return bookList;
         }
-        return bookList;
     }
 
     private List<Book> selectBooksByPredicate(List<Book> bookList, Predicate<Book> predicate) {
@@ -189,14 +189,14 @@ public class TxtBookDAO implements BookDAO {
         if (booksFile == null)
             throw new DAOException("Opening source file error");
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter(booksFile, false));
-        writer.write("");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(booksFile, false))) {
 
-        for (Book b : books) {
-            writer.append(String.valueOf(b.getId())).append(attributeSeparator)
-                    .append(b.getTitle()).append(attributeSeparator)
-                    .append(b.getAuthor()).append(attributeSeparator)
-                    .append(b.getGenre().toString()).append('\n');
+            for (Book b : books) {
+                writer.append(String.valueOf(b.getId())).append(attributeSeparator)
+                        .append(b.getTitle()).append(attributeSeparator)
+                        .append(b.getAuthor()).append(attributeSeparator)
+                        .append(b.getGenre().toString()).append('\n');
+            }
         }
     }
 }

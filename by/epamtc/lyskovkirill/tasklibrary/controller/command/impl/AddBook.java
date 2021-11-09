@@ -36,8 +36,7 @@ public class AddBook extends AbstractCommand {
                 LibraryService libraryService = serviceFactory.getLibraryService();
 
                 try {
-                    Book newBook = new Book(title, author, BookGenre.valueOf(genre.toUpperCase()));
-                    if (libraryService.addNewBook(newBook))
+                    if (libraryService.addNewBook(new Book(title, author, BookGenre.valueOf(genre.toUpperCase()))))
                         response = "Book added to the library!";
                     else
                         response = "Invalid input parameters!";

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class User implements Serializable {
+    private static User guestInstance;
+
     private static int UID;
 
     private int id;
@@ -24,7 +26,7 @@ public class User implements Serializable {
         role = UserRole.GUEST;
     }
 
-    public User(String login, String password, String name){
+    public User(String login, String password, String name) {
         this.login = login;
         this.password = password;
         this.name = name;
@@ -85,6 +87,12 @@ public class User implements Serializable {
 
     public void setBooks(List<Integer> books) {
         this.bookIds = books;
+    }
+
+    public static User getGuestInstance() {
+        if (guestInstance == null)
+            guestInstance = new User();
+        return guestInstance;
     }
 
     @Override

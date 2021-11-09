@@ -22,7 +22,7 @@ public class TxtUserDAO implements UserDAO {
 
     @Override
     public User logInUser(String login, String password) throws DAOException {
-        User user = new User();
+        User user = User.getGuestInstance();
         List<User> userList;
 
         try {
@@ -96,14 +96,14 @@ public class TxtUserDAO implements UserDAO {
 
     @Override
     public User deleteUser(String login, String password) throws DAOException {
-        User user = new User();
+        User user = User.getGuestInstance();
         List<User> userList;
 
         try {
             userList = scanUsersFromFile();
 
             for (int i = 0; i < userList.size(); i++) {
-                if (user.getLogin().equals(userList.get(i).getLogin())) {
+                if (login.equals(userList.get(i).getLogin())) {
                     if (!password.equals(userList.get(i).getPassword()))
                         throw new DAOException("Wrong password");
                     userList.remove(i);
@@ -162,28 +162,29 @@ public class TxtUserDAO implements UserDAO {
         if (usersFile == null)
             throw new DAOException("Opening source file error");
 
-        Scanner scanner = new Scanner(usersFile);
-        List<User> userList = new ArrayList<>();
+        try (Scanner scanner = new Scanner(usersFile)) {
+            List<User> userList = new ArrayList<>();
 
-        while (scanner.hasNext()) {
-            String[] userAttributes = scanner.nextLine().split(attributeSeparator);
-            User temp = new User();
-            temp.setId(Integer.parseInt(userAttributes[0]));
-            temp.setLogin(userAttributes[1]);
-            temp.setPassword(userAttributes[2]);
-            temp.setName(userAttributes[3]);
-            temp.setRole(UserRole.valueOf(userAttributes[4]));
+            while (scanner.hasNext()) {
+                String[] userAttributes = scanner.nextLine().split(attributeSeparator);
+                User temp = new User();
+                temp.setId(Integer.parseInt(userAttributes[0]));
+                temp.setLogin(userAttributes[1]);
+                temp.setPassword(userAttributes[2]);
+                temp.setName(userAttributes[3]);
+                temp.setRole(UserRole.valueOf(userAttributes[4]));
 
-            if (userAttributes.length > 5) {
-                List<Integer> bookIdList = new ArrayList<>();
-                String[] userBookIds = userAttributes[5].split(bookIdSeparator);
-                for (String userBookId : userBookIds)
-                    bookIdList.add(Integer.parseInt(userBookId));
-                temp.setBooks(bookIdList);
+                if (userAttributes.length > 5) {
+                    List<Integer> bookIdList = new ArrayList<>();
+                    String[] userBookIds = userAttributes[5].split(bookIdSeparator);
+                    for (String userBookId : userBookIds)
+                        bookIdList.add(Integer.parseInt(userBookId));
+                    temp.setBooks(bookIdList);
+                }
+                userList.add(temp);
             }
-            userList.add(temp);
+            return userList;
         }
-        return userList;
     }
 
     private void writeUsersToFile(List<User> users) throws DAOException, IOException {
@@ -191,24 +192,25 @@ public class TxtUserDAO implements UserDAO {
         if (usersFile == null)
             throw new DAOException("Opening source file error");
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter(usersFile, false));
-        writer.write("");
-        for (User user : users) {
-            writer.append(String.valueOf(user.getId())).append(attributeSeparator)
-                    .append(user.getLogin()).append(attributeSeparator)
-                    .append(user.getPassword()).append(attributeSeparator)
-                    .append(user.getName()).append(attributeSeparator)
-                    .append(user.getRole().toString());
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(usersFile, false))) {
 
-            if (user.getBooks().size() > 0) {
-                writer.append(attributeSeparator);
-                for (int i = 0; i < user.getBooks().size(); i++) {
-                    writer.append(user.getBooks().get(i).toString());
-                    if (i < user.getBooks().size() - 1)
-                        writer.append(bookIdSeparator);
+            for (User user : users) {
+                writer.append(String.valueOf(user.getId())).append(attributeSeparator)
+                        .append(user.getLogin()).append(attributeSeparator)
+                        .append(user.getPassword()).append(attributeSeparator)
+                        .append(user.getName()).append(attributeSeparator)
+                        .append(user.getRole().toString());
+
+                if (user.getBooks().size() > 0) {
+                    writer.append(attributeSeparator);
+                    for (int i = 0; i < user.getBooks().size(); i++) {
+                        writer.append(user.getBooks().get(i).toString());
+                        if (i < user.getBooks().size() - 1)
+                            writer.append(bookIdSeparator);
+                    }
                 }
+                writer.append('\n');
             }
-            writer.append('\n');
         }
     }
 }
