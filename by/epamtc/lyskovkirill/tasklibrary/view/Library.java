@@ -1,10 +1,10 @@
-package by.epamtc.lyskovkirill.tasklibrary.controller.view;
+package by.epamtc.lyskovkirill.tasklibrary.view;
 
 import by.epamtc.lyskovkirill.tasklibrary.controller.Controller;
 
 import java.util.Scanner;
 
-public class Library {
+public class Library implements Runnable {
     private final static Controller controller = new Controller();
     private final static Scanner scanner = new Scanner(System.in);
 

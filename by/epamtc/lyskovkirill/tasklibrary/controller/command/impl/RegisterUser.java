@@ -34,7 +34,7 @@ public class RegisterUser extends AbstractCommand {
                 ClientService clientService = serviceFactory.getClientService();
 
                 try {
-                    User user = clientService.register(new User(login, password, name));
+                    User user = clientService.registerUser(new User(login, password, name));
                     if (user == null)
                         response = "Invalid input parameters!";
                     else {

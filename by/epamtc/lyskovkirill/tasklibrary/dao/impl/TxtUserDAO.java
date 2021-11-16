@@ -32,7 +32,7 @@ public class TxtUserDAO implements UserDAO {
                 if (login.equals(value.getLogin()) && password.equals(value.getPassword()))
                     user = value;
 
-        } catch (Exception e) {
+        } catch (DAOException | IOException | NumberFormatException e) {
             throw new DAOException("Authorization process error", e);
         }
         return user;
@@ -57,7 +57,7 @@ public class TxtUserDAO implements UserDAO {
             userList.add(newUser);
 
             writeUsersToFile(userList);
-        } catch (Exception e) {
+        } catch (DAOException | IOException | NumberFormatException e) {
             throw new DAOException("Registration process error", e);
         }
     }
@@ -88,7 +88,7 @@ public class TxtUserDAO implements UserDAO {
                 }
             }
             writeUsersToFile(userList);
-        } catch (Exception e) {
+        } catch (DAOException | IOException | NumberFormatException e) {
             throw new DAOException("User updating process error", e);
         }
         return user;
@@ -111,7 +111,7 @@ public class TxtUserDAO implements UserDAO {
                 }
             }
             writeUsersToFile(userList);
-        } catch (Exception e) {
+        } catch (DAOException | IOException | NumberFormatException | IndexOutOfBoundsException e) {
             throw new DAOException("User deleting process error", e);
         }
         return user;
@@ -131,7 +131,7 @@ public class TxtUserDAO implements UserDAO {
                 }
             }
             writeUsersToFile(userList);
-        } catch (Exception e) {
+        } catch (DAOException | IOException | NumberFormatException e) {
             throw new DAOException("Adding book to favourites process error", e);
         }
         return user;
@@ -151,14 +151,15 @@ public class TxtUserDAO implements UserDAO {
                 }
             }
             writeUsersToFile(userList);
-        } catch (Exception e) {
+        } catch (DAOException | IOException | NumberFormatException e) {
             throw new DAOException("Removing book from favourites process error", e);
         }
         return user;
     }
 
     private List<User> scanUsersFromFile() throws DAOException, IOException, NumberFormatException {
-        File usersFile = FilePathConstructor.computeFilePath(new File(System.getProperty("user.dir")), usersFilePath);
+        FilePathConstructor filePathConstructor = FilePathConstructor.getInstance();
+        File usersFile = filePathConstructor.computeFilePath(new File(System.getProperty("user.dir")), usersFilePath);
         if (usersFile == null)
             throw new DAOException("Opening source file error");
 
@@ -188,7 +189,8 @@ public class TxtUserDAO implements UserDAO {
     }
 
     private void writeUsersToFile(List<User> users) throws DAOException, IOException {
-        File usersFile = FilePathConstructor.computeFilePath(new File(System.getProperty("user.dir")), usersFilePath);
+        FilePathConstructor filePathConstructor = FilePathConstructor.getInstance();
+        File usersFile = filePathConstructor.computeFilePath(new File(System.getProperty("user.dir")), usersFilePath);
         if (usersFile == null)
             throw new DAOException("Opening source file error");
 

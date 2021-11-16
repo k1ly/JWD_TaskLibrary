@@ -6,12 +6,14 @@ import by.epamtc.lyskovkirill.tasklibrary.service.impl.ClientServiceImpl;
 import by.epamtc.lyskovkirill.tasklibrary.service.impl.LibraryServiceImpl;
 
 public class ServiceFactory {
-    private final static ServiceFactory instance = new ServiceFactory();
+    private static ServiceFactory instance;
 
     private final ClientService clientService = new ClientServiceImpl();
     private final LibraryService libraryService = new LibraryServiceImpl();
 
-    public static ServiceFactory getInstance() {
+    public static synchronized ServiceFactory getInstance() {
+        if (instance == null)
+            instance = new ServiceFactory();
         return instance;
     }
 

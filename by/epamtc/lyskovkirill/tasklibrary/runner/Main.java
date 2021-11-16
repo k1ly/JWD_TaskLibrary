@@ -1,6 +1,6 @@
 package by.epamtc.lyskovkirill.tasklibrary.runner;
 
-import by.epamtc.lyskovkirill.tasklibrary.controller.view.Library;
+import by.epamtc.lyskovkirill.tasklibrary.view.Library;
 
 public class Main {
 

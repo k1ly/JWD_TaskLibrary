@@ -13,6 +13,6 @@ public interface LibraryService {
     boolean deleteBook(String title, String author) throws ServiceException;
     Book findByTitleAndAuthor(String title, String author) throws ServiceException;
     List<Book> findByAttribute(String attribute, String searchingFilter) throws ServiceException;
-    List<Book> showAllBooks() throws ServiceException;
-    List<Book> showFavourites(User user) throws ServiceException;
+    List<Book> findBooks() throws ServiceException;
+    List<Book> findFavourites(User user) throws ServiceException;
 }

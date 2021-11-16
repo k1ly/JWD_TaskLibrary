@@ -15,13 +15,15 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public User signIn(String login, String password) throws ServiceException {
         User user = null;
+        UserValidation userValidation = new UserValidation();
 
-        if (UserValidation.validateLogin(login) && UserValidation.validatePassword(password)) {
+        if (userValidation.isLoginValid(login) && userValidation.isPasswordValid(password)) {
             DAOFactory daoObjectFactory = DAOFactory.getInstance();
             UserDAO userDAO = daoObjectFactory.getUserDAO();
+            SHA256PasswordHash hash = new SHA256PasswordHash();
 
             try {
-                password = SHA256PasswordHash.computeHash(password);
+                password = hash.computeHash(password);
                 user = userDAO.logInUser(login, password);
             } catch (ServiceException | DAOException e) {
                 throw new ServiceException("Sign in error", e);
@@ -39,14 +41,17 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public User register(User user) throws ServiceException {
-        if (UserValidation.validateLogin(user.getLogin()) && UserValidation.validatePassword(user.getPassword())
-                && UserValidation.validateName(user.getName())) {
+    public User registerUser(User user) throws ServiceException {
+        UserValidation userValidation = new UserValidation();
+
+        if (userValidation.isLoginValid(user.getLogin()) && userValidation.isPasswordValid(user.getPassword())
+                && userValidation.isNameValidName(user.getName())) {
             DAOFactory daoObjectFactory = DAOFactory.getInstance();
             UserDAO userDAO = daoObjectFactory.getUserDAO();
+            SHA256PasswordHash hash = new SHA256PasswordHash();
 
             try {
-                user.setPassword(SHA256PasswordHash.computeHash(user.getPassword()));
+                user.setPassword(hash.computeHash(user.getPassword()));
                 userDAO.registerUser(user);
             } catch (ServiceException | DAOException e) {
                 throw new ServiceException("User registration error", e);
@@ -57,24 +62,26 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public User update(User user, String password, String updatingAttribute, String newAttribute) throws ServiceException {
+    public User updateUser(User user, String password, String updatingAttribute, String newAttribute) throws ServiceException {
         boolean isNewAttributeValid = false;
         UserAttribute userAttribute;
 
+        UserValidation userValidation = new UserValidation();
         DAOFactory daoObjectFactory = DAOFactory.getInstance();
         UserDAO userDAO = daoObjectFactory.getUserDAO();
+        SHA256PasswordHash hash = new SHA256PasswordHash();
 
         try {
             userAttribute = UserAttribute.valueOf(updatingAttribute);
             switch (userAttribute) {
-                case LOGIN -> isNewAttributeValid = UserValidation.validateLogin(newAttribute);
-                case PASSWORD -> isNewAttributeValid = UserValidation.validatePassword(newAttribute);
-                case NAME -> isNewAttributeValid = UserValidation.validateName(newAttribute);
+                case LOGIN -> isNewAttributeValid = userValidation.isLoginValid(newAttribute);
+                case PASSWORD -> isNewAttributeValid = userValidation.isPasswordValid(newAttribute);
+                case NAME -> isNewAttributeValid = userValidation.isNameValidName(newAttribute);
             }
-            password = SHA256PasswordHash.computeHash(password);
+            password = hash.computeHash(password);
             if (userAttribute == UserAttribute.PASSWORD)
-                newAttribute = SHA256PasswordHash.computeHash(newAttribute);
-            if (isNewAttributeValid && UserValidation.validatePassword(password))
+                newAttribute = hash.computeHash(newAttribute);
+            if (isNewAttributeValid && userValidation.isPasswordValid(password))
                 user = userDAO.updateUser(user, password, userAttribute, newAttribute);
             else
                 user = null;
@@ -85,15 +92,17 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public User delete(String login, String password) throws ServiceException {
+    public User deleteUser(String login, String password) throws ServiceException {
         User user = null;
+        UserValidation userValidation = new UserValidation();
 
-        if (UserValidation.validatePassword(password)) {
+        if (userValidation.isPasswordValid(password)) {
             DAOFactory daoObjectFactory = DAOFactory.getInstance();
             UserDAO userDAO = daoObjectFactory.getUserDAO();
+            SHA256PasswordHash hash = new SHA256PasswordHash();
 
             try {
-                password = SHA256PasswordHash.computeHash(password);
+                password = hash.computeHash(password);
                 user = userDAO.deleteUser(login, password);
             } catch (ServiceException | DAOException e) {
                 throw new ServiceException("User deleting error", e);

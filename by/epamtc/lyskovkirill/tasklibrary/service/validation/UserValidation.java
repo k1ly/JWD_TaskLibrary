@@ -4,21 +4,24 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UserValidation {
-    private final static String COMMON_PATTERN = "([\\w_\\d])";
+    private final static String COMMON_PATTERN = "([\\w_])";
+    private final static String LOGIN_PATTERN = COMMON_PATTERN + "{5,20}";
+    private final static String PASSWORD_PATTERN = COMMON_PATTERN + "{8,20}";
+    private final static String NAME_PATTERN = COMMON_PATTERN + "{4,30}";
 
-    public static boolean validateLogin(String login) {
-        return validate(COMMON_PATTERN + "{5,20}", login);
+    public boolean isLoginValid(String login) {
+        return isArgValid(LOGIN_PATTERN, login);
     }
 
-    public static boolean validatePassword(String password) {
-        return validate(COMMON_PATTERN + "{8,20}", password);
+    public boolean isPasswordValid(String password) {
+        return isArgValid(PASSWORD_PATTERN, password);
     }
 
-    public static boolean validateName(String name) {
-        return validate(COMMON_PATTERN + "{4,30}", name);
+    public boolean isNameValidName(String name) {
+        return isArgValid(NAME_PATTERN, name);
     }
 
-    private static boolean validate(String pattern, String arg) {
+    private boolean isArgValid(String pattern, String arg) {
         Pattern patternCompile = Pattern.compile(pattern);
         Matcher matcher = patternCompile.matcher(arg);
         return matcher.matches();

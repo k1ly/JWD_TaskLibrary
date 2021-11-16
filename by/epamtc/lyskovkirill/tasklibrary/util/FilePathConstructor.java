@@ -3,7 +3,15 @@ package by.epamtc.lyskovkirill.tasklibrary.util;
 import java.io.File;
 
 public class FilePathConstructor {
-    public static File computeFilePath(File path, String fileName) {
+    private static FilePathConstructor instance;
+
+    public static synchronized FilePathConstructor getInstance() {
+        if(instance == null)
+            instance = new FilePathConstructor();
+        return instance;
+    }
+
+    public File computeFilePath(File path, String fileName) {
         if (path.isDirectory()) {
             File[] arr = path.listFiles();
             File srcPath = null;

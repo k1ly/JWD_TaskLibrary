@@ -34,7 +34,7 @@ public class UpdateUser extends AbstractCommand {
                 ClientService clientService = serviceFactory.getClientService();
 
                 try {
-                    User user = clientService.update(userContext, password, updatingAttribute.toUpperCase(), newAttribute);
+                    User user = clientService.updateUser(userContext, password, updatingAttribute.toUpperCase(), newAttribute);
                     if (user == null)
                         response = "Invalid input parameters!";
                     else {

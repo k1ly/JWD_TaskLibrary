@@ -26,7 +26,7 @@ public class ShowFavourites extends AbstractCommand {
                 LibraryService libraryService = serviceFactory.getLibraryService();
 
                 try {
-                    List<Book> bookList = libraryService.showFavourites(userContext);
+                    List<Book> bookList = libraryService.findFavourites(userContext);
                     if (bookList == null)
                         response = "Invalid input parameters!";
                     else {

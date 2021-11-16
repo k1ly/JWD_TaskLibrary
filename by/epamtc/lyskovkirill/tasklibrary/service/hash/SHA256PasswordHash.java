@@ -6,8 +6,8 @@ import java.security.MessageDigest;
 
 public class SHA256PasswordHash {
 
-    public static String computeHash(String password) throws ServiceException {
-        String passwordHash = null;
+    public String computeHash(String password) throws ServiceException {
+        String passwordHash;
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
             byte[] hash = messageDigest.digest(password.getBytes());

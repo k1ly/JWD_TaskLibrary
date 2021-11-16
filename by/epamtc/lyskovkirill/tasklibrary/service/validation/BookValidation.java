@@ -6,16 +6,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BookValidation {
+    private final static String TITLE_PATTERN = "\"(\\w){1,20}(_?(\\w){1,20})*\"";
+    private final static String AUTHOR_PATTERN = "\"(\\w){1,20}(_?(\\w){1,20})*\"";
 
-    public static boolean validateTitle(String title) {
-        return validate("\"(\\w){1,20}(_?(\\w){1,20})*\"", title);
+    public boolean isTitleValid(String title) {
+        return isArgValid(TITLE_PATTERN, title);
     }
 
-    public static boolean validateAuthor(String author) {
-        return validate("((\\w\\.)|(_?\\w{2,20})){1,3}", author);
+    public boolean isAuthorValid(String author) {
+        return isArgValid(AUTHOR_PATTERN, author);
     }
 
-    public static boolean validateGenre(String genre) {
+    public boolean isGenreValid(String genre) {
         boolean isValid;
         try {
             BookGenre.valueOf(genre);
@@ -26,7 +28,7 @@ public class BookValidation {
         return isValid;
     }
 
-    private static boolean validate(String pattern, String arg) {
+    private boolean isArgValid(String pattern, String arg) {
         Pattern patternCompile = Pattern.compile(pattern);
         Matcher matcher = patternCompile.matcher(arg);
         return matcher.matches();

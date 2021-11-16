@@ -30,7 +30,7 @@ public class DeleteUser extends AbstractCommand {
                 ClientService clientService = serviceFactory.getClientService();
 
                 try {
-                    User user = clientService.delete(userContext.getLogin(), password);
+                    User user = clientService.deleteUser(userContext.getLogin(), password);
                     if (user == null)
                         response = "Invalid input parameters!";
                     else {

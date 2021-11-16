@@ -14,6 +14,6 @@ public interface BookDAO {
     void deleteBook(String title, String author) throws DAOException;
     Book findByTitleAndAuthor(String title, String author) throws DAOException;
     List<Book> findByAttribute(BookAttribute attribute, String searchingFilter) throws DAOException;
-    List<Book> showBooks() throws DAOException;
-    List<Book> showFavourites(User user) throws DAOException;
+    List<Book> findBooks() throws DAOException;
+    List<Book> findFavourites(User user) throws DAOException;
 }

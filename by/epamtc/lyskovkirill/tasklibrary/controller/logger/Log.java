@@ -8,16 +8,19 @@ import org.apache.log4j.xml.DOMConfigurator;
 import java.io.File;
 
 public class Log {
-    private static final Logger logger = Logger.getLogger("");
+    private static Logger logger;
 
     static {
-        File logFile = FilePathConstructor.computeFilePath(new File(System.getProperty("user.dir")), "logger/log4j.xml");
+        FilePathConstructor filePathConstructor = FilePathConstructor.getInstance();
+        File logFile = filePathConstructor.computeFilePath(new File(System.getProperty("user.dir")), "logger/log4j.xml");
         if (logFile != null) {
             new DOMConfigurator().doConfigure(logFile.getPath(), LogManager.getLoggerRepository());
         }
     }
 
-    public static Logger getLogger() {
+    public static synchronized Logger getLogger() {
+        if (logger == null)
+            logger = Logger.getLogger("");
         return logger;
     }
 }

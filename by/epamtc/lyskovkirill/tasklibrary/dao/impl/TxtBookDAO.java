@@ -40,7 +40,7 @@ public class TxtBookDAO implements BookDAO {
             bookList.add(book);
 
             writeUsersToFile(bookList);
-        } catch (Exception e) {
+        } catch (DAOException | IOException | NumberFormatException e) {
             throw new DAOException("Book adding process error", e);
         }
     }
@@ -65,7 +65,7 @@ public class TxtBookDAO implements BookDAO {
 
             }
             writeUsersToFile(bookList);
-        } catch (Exception e) {
+        } catch (DAOException | IOException | NumberFormatException e) {
             throw new DAOException("Book editing process error", e);
         }
     }
@@ -84,7 +84,7 @@ public class TxtBookDAO implements BookDAO {
                 }
             }
             writeUsersToFile(bookList);
-        } catch (Exception e) {
+        } catch (DAOException | IOException | NumberFormatException | IndexOutOfBoundsException e) {
             throw new DAOException("Book deleting process error", e);
         }
     }
@@ -101,7 +101,7 @@ public class TxtBookDAO implements BookDAO {
                 if (title.equals(b.getTitle()) && author.equals(b.getAuthor()))
                     book = b;
             }
-        } catch (Exception e) {
+        } catch (DAOException | IOException | NumberFormatException e) {
             throw new DAOException("Searching book to favourites process error", e);
         }
         return book;
@@ -116,26 +116,26 @@ public class TxtBookDAO implements BookDAO {
                     ((attribute == BookAttribute.TITLE && searchingFilter.equals(book.getTitle()))
                             || (attribute == BookAttribute.AUTHOR && searchingFilter.equals(book.getAuthor()))
                             || (attribute == BookAttribute.GENRE && searchingFilter.toUpperCase().equals(book.getGenre().toString()))));
-        } catch (Exception e) {
+        } catch (DAOException | IOException | NumberFormatException e) {
             throw new DAOException("Searching books by attribute process error", e);
         }
         return bookList;
     }
 
     @Override
-    public List<Book> showBooks() throws DAOException {
+    public List<Book> findBooks() throws DAOException {
         List<Book> bookList;
 
         try {
             bookList = scanBooksFromFile();
-        } catch (Exception e) {
+        } catch (DAOException | IOException | NumberFormatException e) {
             throw new DAOException("Receiving all books process error", e);
         }
         return bookList;
     }
 
     @Override
-    public List<Book> showFavourites(User user) throws DAOException {
+    public List<Book> findFavourites(User user) throws DAOException {
         List<Book> bookList;
         List<Book> favourites = new ArrayList<>();
 
@@ -148,14 +148,15 @@ public class TxtBookDAO implements BookDAO {
                 if (books.size() > 0)
                     favourites.add(books.get(0));
             }
-        } catch (Exception e) {
+        } catch (DAOException | IOException | NumberFormatException e) {
             throw new DAOException("Receiving user favourites error", e);
         }
         return favourites;
     }
 
     private List<Book> scanBooksFromFile() throws DAOException, IOException, NumberFormatException {
-        File booksFile = FilePathConstructor.computeFilePath(new File(System.getProperty("user.dir")), booksFilePath);
+        FilePathConstructor filePathConstructor = FilePathConstructor.getInstance();
+        File booksFile = filePathConstructor.computeFilePath(new File(System.getProperty("user.dir")), booksFilePath);
         if (booksFile == null)
             throw new DAOException("Opening source file error");
 
@@ -185,7 +186,8 @@ public class TxtBookDAO implements BookDAO {
     }
 
     private void writeUsersToFile(List<Book> books) throws DAOException, IOException {
-        File booksFile = FilePathConstructor.computeFilePath(new File(System.getProperty("user.dir")), booksFilePath);
+        FilePathConstructor filePathConstructor = FilePathConstructor.getInstance();
+        File booksFile = filePathConstructor.computeFilePath(new File(System.getProperty("user.dir")), booksFilePath);
         if (booksFile == null)
             throw new DAOException("Opening source file error");
 

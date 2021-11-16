@@ -26,7 +26,7 @@ public class ShowBooks extends AbstractCommand {
                 LibraryService libraryService = serviceFactory.getLibraryService();
 
                 try {
-                    List<Book> bookList = libraryService.showAllBooks();
+                    List<Book> bookList = libraryService.findBooks();
                     if (bookList == null)
                         response = "Invalid input parameters!";
                     else {

@@ -6,12 +6,14 @@ import by.epamtc.lyskovkirill.tasklibrary.dao.impl.TxtBookDAO;
 import by.epamtc.lyskovkirill.tasklibrary.dao.impl.TxtUserDAO;
 
 public class DAOFactory {
-    private final static DAOFactory instance = new DAOFactory();
+    private static DAOFactory instance;
 
     private UserDAO userDAO = new TxtUserDAO();
     private BookDAO bookDAO = new TxtBookDAO();
 
-    public static DAOFactory getInstance() {
+    public static synchronized  DAOFactory getInstance() {
+        if (instance == null)
+            instance = new DAOFactory();
         return instance;
     }
 
