@@ -8,7 +8,7 @@ import by.epamtc.lyskovkirill.tasklibrary.dao.exception.DAOException;
 import by.epamtc.lyskovkirill.tasklibrary.dao.factory.DAOFactory;
 import by.epamtc.lyskovkirill.tasklibrary.service.LibraryService;
 import by.epamtc.lyskovkirill.tasklibrary.service.exception.ServiceException;
-import by.epamtc.lyskovkirill.tasklibrary.service.validation.BookValidation;
+import by.epamtc.lyskovkirill.tasklibrary.service.validation.BookValidator;
 
 import java.util.List;
 
@@ -17,9 +17,9 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     public boolean addNewBook(Book book) throws ServiceException {
         boolean isInputValid = false;
-        BookValidation bookValidation = new BookValidation();
+        BookValidator bookValidator = new BookValidator();
 
-        if (bookValidation.isTitleValid(book.getTitle()) && bookValidation.isAuthorValid(book.getAuthor())) {
+        if (bookValidator.isTitleValid(book.getTitle()) && bookValidator.isAuthorValid(book.getAuthor())) {
             DAOFactory daoObjectFactory = DAOFactory.getInstance();
             BookDAO bookDAO = daoObjectFactory.getBookDAO();
 
@@ -39,18 +39,18 @@ public class LibraryServiceImpl implements LibraryService {
         boolean isNewAttributeValid = false;
         BookAttribute bookAttribute;
 
-        BookValidation bookValidation = new BookValidation();
+        BookValidator bookValidator = new BookValidator();
         DAOFactory daoObjectFactory = DAOFactory.getInstance();
         BookDAO bookDAO = daoObjectFactory.getBookDAO();
 
         try {
             bookAttribute = BookAttribute.valueOf(editingAttribute);
             switch (bookAttribute) {
-                case TITLE -> isNewAttributeValid = bookValidation.isTitleValid(newAttribute);
-                case AUTHOR -> isNewAttributeValid = bookValidation.isAuthorValid(newAttribute);
-                case GENRE -> isNewAttributeValid = bookValidation.isGenreValid(newAttribute);
+                case TITLE -> isNewAttributeValid = bookValidator.isTitleValid(newAttribute);
+                case AUTHOR -> isNewAttributeValid = bookValidator.isAuthorValid(newAttribute);
+                case GENRE -> isNewAttributeValid = bookValidator.isGenreValid(newAttribute);
             }
-            if (isNewAttributeValid && bookValidation.isTitleValid(title) && bookValidation.isAuthorValid(author)) {
+            if (isNewAttributeValid && bookValidator.isTitleValid(title) && bookValidator.isAuthorValid(author)) {
                 bookDAO.editBook(title, author, bookAttribute, newAttribute);
                 isInputValid = true;
             }
@@ -63,9 +63,9 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     public boolean deleteBook(String title, String author) throws ServiceException {
         boolean isInputValid = false;
-        BookValidation bookValidation = new BookValidation();
+        BookValidator bookValidator = new BookValidator();
 
-        if (bookValidation.isTitleValid(title) && bookValidation.isAuthorValid(author)) {
+        if (bookValidator.isTitleValid(title) && bookValidator.isAuthorValid(author)) {
             DAOFactory daoObjectFactory = DAOFactory.getInstance();
             BookDAO bookDAO = daoObjectFactory.getBookDAO();
 
@@ -82,9 +82,9 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     public Book findByTitleAndAuthor(String title, String author) throws ServiceException {
         Book book = null;
-        BookValidation bookValidation = new BookValidation();
+        BookValidator bookValidator = new BookValidator();
 
-        if (bookValidation.isTitleValid(title) && bookValidation.isAuthorValid(author)) {
+        if (bookValidator.isTitleValid(title) && bookValidator.isAuthorValid(author)) {
             DAOFactory daoObjectFactory = DAOFactory.getInstance();
             BookDAO bookDAO = daoObjectFactory.getBookDAO();
 
@@ -103,16 +103,16 @@ public class LibraryServiceImpl implements LibraryService {
         boolean isSearchingFilterValid = false;
         BookAttribute bookAttribute;
 
-        BookValidation bookValidation = new BookValidation();
+        BookValidator bookValidator = new BookValidator();
         DAOFactory daoObjectFactory = DAOFactory.getInstance();
         BookDAO bookDAO = daoObjectFactory.getBookDAO();
 
         try {
             bookAttribute = BookAttribute.valueOf(attribute);
             switch (bookAttribute) {
-                case TITLE -> isSearchingFilterValid = bookValidation.isTitleValid(searchingFilter);
-                case AUTHOR -> isSearchingFilterValid = bookValidation.isAuthorValid(searchingFilter);
-                case GENRE -> isSearchingFilterValid = bookValidation.isGenreValid(searchingFilter);
+                case TITLE -> isSearchingFilterValid = bookValidator.isTitleValid(searchingFilter);
+                case AUTHOR -> isSearchingFilterValid = bookValidator.isAuthorValid(searchingFilter);
+                case GENRE -> isSearchingFilterValid = bookValidator.isGenreValid(searchingFilter);
             }
             if (isSearchingFilterValid)
                 bookList = bookDAO.findByAttribute(bookAttribute, searchingFilter);

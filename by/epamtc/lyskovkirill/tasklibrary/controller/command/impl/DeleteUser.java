@@ -3,7 +3,7 @@ package by.epamtc.lyskovkirill.tasklibrary.controller.command.impl;
 import by.epamtc.lyskovkirill.tasklibrary.bean.User;
 import by.epamtc.lyskovkirill.tasklibrary.bean.UserRole;
 import by.epamtc.lyskovkirill.tasklibrary.controller.command.AbstractCommand;
-import by.epamtc.lyskovkirill.tasklibrary.controller.logger.Log;
+import by.epamtc.lyskovkirill.tasklibrary.controller.logger.LibraryLogger;
 import by.epamtc.lyskovkirill.tasklibrary.service.ClientService;
 import by.epamtc.lyskovkirill.tasklibrary.service.exception.ServiceException;
 import by.epamtc.lyskovkirill.tasklibrary.service.factory.ServiceFactory;
@@ -39,7 +39,7 @@ public class DeleteUser extends AbstractCommand {
                     }
                 } catch (ServiceException e) {
                     response = "Error during user deleting";
-                    Log.getLogger().error("Error stack trace:", e);
+                    LibraryLogger.getLogger().error("Error stack trace:", e);
                 }
             }
         }

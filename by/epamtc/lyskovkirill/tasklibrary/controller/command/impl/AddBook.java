@@ -4,8 +4,7 @@ import by.epamtc.lyskovkirill.tasklibrary.bean.Book;
 import by.epamtc.lyskovkirill.tasklibrary.bean.BookGenre;
 import by.epamtc.lyskovkirill.tasklibrary.bean.UserRole;
 import by.epamtc.lyskovkirill.tasklibrary.controller.command.AbstractCommand;
-import by.epamtc.lyskovkirill.tasklibrary.controller.command.Command;
-import by.epamtc.lyskovkirill.tasklibrary.controller.logger.Log;
+import by.epamtc.lyskovkirill.tasklibrary.controller.logger.LibraryLogger;
 import by.epamtc.lyskovkirill.tasklibrary.service.LibraryService;
 import by.epamtc.lyskovkirill.tasklibrary.service.exception.ServiceException;
 import by.epamtc.lyskovkirill.tasklibrary.service.factory.ServiceFactory;
@@ -42,7 +41,7 @@ public class AddBook extends AbstractCommand {
                         response = "Invalid input parameters!";
                 } catch (ServiceException | IllegalArgumentException e) {
                     response = "Error during book adding";
-                    Log.getLogger().error("Error stack trace:", e);
+                    LibraryLogger.getLogger().error("Error stack trace:", e);
                 }
             }
         }

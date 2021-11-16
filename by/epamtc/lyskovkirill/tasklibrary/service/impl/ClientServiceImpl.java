@@ -8,22 +8,22 @@ import by.epamtc.lyskovkirill.tasklibrary.dao.factory.DAOFactory;
 import by.epamtc.lyskovkirill.tasklibrary.service.ClientService;
 import by.epamtc.lyskovkirill.tasklibrary.service.exception.ServiceException;
 import by.epamtc.lyskovkirill.tasklibrary.service.hash.SHA256PasswordHash;
-import by.epamtc.lyskovkirill.tasklibrary.service.validation.UserValidation;
+import by.epamtc.lyskovkirill.tasklibrary.service.validation.UserValidator;
 
 public class ClientServiceImpl implements ClientService {
 
     @Override
     public User signIn(String login, String password) throws ServiceException {
         User user = null;
-        UserValidation userValidation = new UserValidation();
+        UserValidator userValidator = new UserValidator();
 
-        if (userValidation.isLoginValid(login) && userValidation.isPasswordValid(password)) {
+        if (userValidator.isLoginValid(login) && userValidator.isPasswordValid(password)) {
             DAOFactory daoObjectFactory = DAOFactory.getInstance();
             UserDAO userDAO = daoObjectFactory.getUserDAO();
-            SHA256PasswordHash hash = new SHA256PasswordHash();
+            SHA256PasswordHash passwordHash = new SHA256PasswordHash();
 
             try {
-                password = hash.computeHash(password);
+                password = passwordHash.computeHash(password);
                 user = userDAO.logInUser(login, password);
             } catch (ServiceException | DAOException e) {
                 throw new ServiceException("Sign in error", e);
@@ -42,16 +42,16 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public User registerUser(User user) throws ServiceException {
-        UserValidation userValidation = new UserValidation();
+        UserValidator userValidator = new UserValidator();
 
-        if (userValidation.isLoginValid(user.getLogin()) && userValidation.isPasswordValid(user.getPassword())
-                && userValidation.isNameValidName(user.getName())) {
+        if (userValidator.isLoginValid(user.getLogin()) && userValidator.isPasswordValid(user.getPassword())
+                && userValidator.isNameValidName(user.getName())) {
             DAOFactory daoObjectFactory = DAOFactory.getInstance();
             UserDAO userDAO = daoObjectFactory.getUserDAO();
-            SHA256PasswordHash hash = new SHA256PasswordHash();
+            SHA256PasswordHash passwordHash = new SHA256PasswordHash();
 
             try {
-                user.setPassword(hash.computeHash(user.getPassword()));
+                user.setPassword(passwordHash.computeHash(user.getPassword()));
                 userDAO.registerUser(user);
             } catch (ServiceException | DAOException e) {
                 throw new ServiceException("User registration error", e);
@@ -66,22 +66,22 @@ public class ClientServiceImpl implements ClientService {
         boolean isNewAttributeValid = false;
         UserAttribute userAttribute;
 
-        UserValidation userValidation = new UserValidation();
+        UserValidator userValidator = new UserValidator();
         DAOFactory daoObjectFactory = DAOFactory.getInstance();
         UserDAO userDAO = daoObjectFactory.getUserDAO();
-        SHA256PasswordHash hash = new SHA256PasswordHash();
+        SHA256PasswordHash passwordHash = new SHA256PasswordHash();
 
         try {
             userAttribute = UserAttribute.valueOf(updatingAttribute);
             switch (userAttribute) {
-                case LOGIN -> isNewAttributeValid = userValidation.isLoginValid(newAttribute);
-                case PASSWORD -> isNewAttributeValid = userValidation.isPasswordValid(newAttribute);
-                case NAME -> isNewAttributeValid = userValidation.isNameValidName(newAttribute);
+                case LOGIN -> isNewAttributeValid = userValidator.isLoginValid(newAttribute);
+                case PASSWORD -> isNewAttributeValid = userValidator.isPasswordValid(newAttribute);
+                case NAME -> isNewAttributeValid = userValidator.isNameValidName(newAttribute);
             }
-            password = hash.computeHash(password);
+            password = passwordHash.computeHash(password);
             if (userAttribute == UserAttribute.PASSWORD)
-                newAttribute = hash.computeHash(newAttribute);
-            if (isNewAttributeValid && userValidation.isPasswordValid(password))
+                newAttribute = passwordHash.computeHash(newAttribute);
+            if (isNewAttributeValid && userValidator.isPasswordValid(password))
                 user = userDAO.updateUser(user, password, userAttribute, newAttribute);
             else
                 user = null;
@@ -94,15 +94,15 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public User deleteUser(String login, String password) throws ServiceException {
         User user = null;
-        UserValidation userValidation = new UserValidation();
+        UserValidator userValidator = new UserValidator();
 
-        if (userValidation.isPasswordValid(password)) {
+        if (userValidator.isPasswordValid(password)) {
             DAOFactory daoObjectFactory = DAOFactory.getInstance();
             UserDAO userDAO = daoObjectFactory.getUserDAO();
-            SHA256PasswordHash hash = new SHA256PasswordHash();
+            SHA256PasswordHash passwordHash = new SHA256PasswordHash();
 
             try {
-                password = hash.computeHash(password);
+                password = passwordHash.computeHash(password);
                 user = userDAO.deleteUser(login, password);
             } catch (ServiceException | DAOException e) {
                 throw new ServiceException("User deleting error", e);

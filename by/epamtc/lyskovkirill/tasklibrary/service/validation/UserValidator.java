@@ -3,7 +3,7 @@ package by.epamtc.lyskovkirill.tasklibrary.service.validation;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class UserValidation {
+public class UserValidator {
     private final static String COMMON_PATTERN = "([\\w_])";
     private final static String LOGIN_PATTERN = COMMON_PATTERN + "{5,20}";
     private final static String PASSWORD_PATTERN = COMMON_PATTERN + "{8,20}";

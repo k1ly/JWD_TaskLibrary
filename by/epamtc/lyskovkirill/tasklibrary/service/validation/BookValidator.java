@@ -5,7 +5,7 @@ import by.epamtc.lyskovkirill.tasklibrary.bean.BookGenre;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BookValidation {
+public class BookValidator {
     private final static String TITLE_PATTERN = "\"(\\w){1,20}(_?(\\w){1,20})*\"";
     private final static String AUTHOR_PATTERN = "\"(\\w){1,20}(_?(\\w){1,20})*\"";
 

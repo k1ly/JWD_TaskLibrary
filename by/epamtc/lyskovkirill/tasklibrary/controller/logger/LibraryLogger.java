@@ -7,7 +7,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 
 import java.io.File;
 
-public class Log {
+public class LibraryLogger {
     private static Logger logger;
 
     static {
